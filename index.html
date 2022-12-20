@@ -12,29 +12,81 @@
 
   <body>
     <div class="section-wrapper">
-      <div class="image-wrapper">
-        <img id="image-container" src="" alt="">
-        <div class="content">
-          Photo by <a class="photographer-link" target="_blank" href=""> <span id="photographer-name"></span> </a> on <a target="_blank" href="https://unsplash.com/?utm_source=image_cards&utm_medium=referral"> Unsplash</a>
+      <div class="header">
+        <form id="form-search">
+          <label for="search"><span class="sr-only">Search</span></label>
+          <input type="text" name="search" placeholder="Enter Prompt">
+          <input type="submit">
+        </form>
+        <div id="details">
+          ?
         </div>
       </div>
-      <div class="bottom">
-        <button id="new-request">New Image</button>
+      <div class="image-wrapper">
+        <img id="image-container" src="" alt="">
+      </div>
+      <div class="footer">
+        <div class="photo-data">
+          <div>Photo by: <a class="photographer-link" target="_blank" href=""> <span id="photographer-name"></span></div>
+          <div></a> on <a target="_blank" href="https://unsplash.com/?utm_source=image_cards&utm_medium=referral"> Unsplash</a></div>
+        </div>
+        <button id="new-request">New Random Image</button>
+      </div>
+    </div>
+    <div id="popup">
+      <div class="exit"><div class="left"></div><div class="right"></div></div>
+      <div class="content">
+        <h2>What is this?</h2>
+        <p>
+          <strong>Have something swirling around your mind? Need an answer? Need a question? It doesn't really matter, because you already know what you need to know. Sometimes we just need some help realizing what we already know.</strong>
+        </p>
+        <p>
+          You can either load a random image or enter a prompt at the top to see something a little more relevant to your searching. Whatever image pops up all we ask is that you consider it. Does it stir something? Maybe you'd like to use it to set an intention for your day. Maybe it reminds you of a relationship that needs attention. It's really up to you, but please, take a moment, and sit with it.
+        </p>
       </div>
     </div>
   </body>
 </html>
 
 <style>
+  body {
+    position: relative;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 124px;
+  }
+  form {
+    width: 50%;
+  }
+  form input[type='text'] {
+    border: 0;
+    width: 80%;
+    border-bottom: 1px solid black;
+  }
+  #details {
+    height: 32px;
+    width: 32px;
+    border-radius: 100px;
+    font-size: 20px;
+    border: 1px solid black;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .section-wrapper {
     position: relative;
+    height: 100vh;
+    width: 85%;
+    margin: 0 auto;
   }
   .image-wrapper {
     position: relative;
-    height: auto;
-    max-height: calc( 100vh - 50px );
-    width: 80%;
-    margin: 24px auto;
+    height: calc( 100vh - 264px );
+    width: 100%;
     top: 0;
     left: 0;
   }
@@ -43,29 +95,8 @@
     width: 100%;
     object-fit: cover;
   }
-  .content {
-    position: absolute;
-    bottom: -24px;
-    left: 0;
-    width: 100%;
-    height: 24px;
-    background-color: black;
-    color: white;
-    align-text: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .content a {
-    color: white;
-  }
-  .bottom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   #new-request {
-    margin: 10px auto;
+    margin-left: auto;
     width: fit-content;
     padding: 8px 12px;
     border: 1px solid black;
@@ -74,20 +105,94 @@
     font-size: 32px;
     border-radius: 12px;
   }
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 124px;
+    margin-top: 16px;
+  }
+  .photo-data {
+    margin-top: -16px;
+  }
+  #popup {
+    position: absolute;
+    opacity: 0;
+    transition: all .3s;
+    width: 75%;
+    padding: 20px 24px;
+    background-color: white;
+    pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  #popup .content h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 48px;
+  }
+  #popup .content p {
+    font-size: 24px;
+  }
+  #popup.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #popup .exit {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	  transform: rotate(45deg);
+    top: 1rem;
+    right: 1rem;
+  }
+  .left {
+    content: "";
+    position: absolute;
+    background-color: black;
+    width: 13px;
+    height: 1px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .right {
+    content: "";
+    position: absolute;
+    background-color: black;
+    width: 1px;
+    height: 13px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .sr-only {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
-  var settings = {
-  "url": "https://api.unsplash.com/photos/random/?client_id=dryCYdEKq53ekmRGo1Syv33y2x7oMybQvn3oICgJL9A",
+var random = {
+  "url": "https://api.unsplash.com/photos/random/?orientation=portrait&client_id=dryCYdEKq53ekmRGo1Syv33y2x7oMybQvn3oICgJL9A",
   "method": "GET",
   "timeout": 0,
 };
 
-unsplashRequest();
+var search = {
+  "url": "https://api.unsplash.com/search/photos/?query=lion&per_page=10&client_id=dryCYdEKq53ekmRGo1Syv33y2x7oMybQvn3oICgJL9A",
+  "method": "GET",
+  "timeout": 0,
+};
 
-function unsplashRequest() {
-  $.ajax(settings).done(function (response) {
+unsplashRandom();
+
+function unsplashRandom() {
+  $.ajax(random).done(function (response) {
     console.log(response);
     $('#image-container').attr('src', response.urls.regular);
     $('#image-container').attr('alt', response.alt_description);
@@ -96,7 +201,25 @@ function unsplashRequest() {
   });
 }
 
+function unsplashSearch() {
+  $.ajax(search).done(function (response) {
+    let x = Math.round(Math.random() * response.results.length);
+    console.log(x);
+    $('#image-container').attr('src', response.results[x].urls.regular);
+    $('#image-container').attr('alt', response.results[x].alt_description);
+    $('#photographer-link').attr('src', response.results[x].user.links.html+'?utm_source=image_cards&utm_medium=referral');
+    $('#photographer-name').text(response.results[x].user.name);
+  });
+}
+
 $('#new-request').on('click', function() {
-  unsplashRequest();
+  unsplashRandom();
+});
+
+$('#details').on('click', function() {
+  $('#popup').addClass('active');
+});
+$('#popup .exit').on('click', function() {
+  $('#popup').removeClass('active');
 });
 </script>
