@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Image Cards</title>
+</head>
+
+<header>
+
+</header>
+
+  <body>
+    <div class="section-wrapper">
+      <div class="image-wrapper">
+        <img id="image-container" src="" alt="">
+        <div class="content">
+          Photo by <a class="photographer-link" target="_blank" href=""> <span id="photographer-name"></span> </a> on <a target="_blank" href="https://unsplash.com/?utm_source=image_cards&utm_medium=referral"> Unsplash</a>
+        </div>
+      </div>
+      <div class="bottom">
+        <button id="new-request">New Image</button>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  .section-wrapper {
+    position: relative;
+  }
+  .image-wrapper {
+    position: relative;
+    height: auto;
+    max-height: calc( 100vh - 50px );
+    width: 80%;
+    margin: 24px auto;
+    top: 0;
+    left: 0;
+  }
+  #image-container {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+  .content {
+    position: absolute;
+    bottom: -24px;
+    left: 0;
+    width: 100%;
+    height: 24px;
+    background-color: black;
+    color: white;
+    align-text: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .content a {
+    color: white;
+  }
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #new-request {
+    margin: 10px auto;
+    width: fit-content;
+    padding: 8px 12px;
+    border: 1px solid black;
+    background-color: black;
+    color: white;
+    font-size: 32px;
+    border-radius: 12px;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+  var settings = {
+  "url": "https://api.unsplash.com/photos/random/?client_id=dryCYdEKq53ekmRGo1Syv33y2x7oMybQvn3oICgJL9A",
+  "method": "GET",
+  "timeout": 0,
+};
+
+unsplashRequest();
+
+function unsplashRequest() {
+  $.ajax(settings).done(function (response) {
+    console.log(response);
+    $('#image-container').attr('src', response.urls.regular);
+    $('#image-container').attr('alt', response.alt_description);
+    $('#photographer-link').attr('src', response.user.links.html+'?utm_source=image_cards&utm_medium=referral');
+    $('#photographer-name').text(response.user.name);
+  });
+}
+
+$('#new-request').on('click', function() {
+  unsplashRequest();
+});
+</script>
