@@ -2,26 +2,23 @@
 <html lang="en">
 
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap" rel="stylesheet">
   <meta charset="utf-8">
   <title>Image Cards</title>
 </head>
 
-<header>
-
-</header>
-
   <body>
     <div class="section-wrapper">
-      <div class="header">
+      <header class="header">
         <form id="form-search">
           <label for="search"><span class="sr-only">Search</span></label>
-          <input type="text" name="search" placeholder="Enter Prompt">
+          <input id="search-term" type="text" name="search" placeholder="Enter Prompt">
           <input type="submit">
         </form>
         <div id="details">
           ?
         </div>
-      </div>
+      </header>
       <div class="image-wrapper">
         <img id="image-container" src="" alt="">
       </div>
@@ -33,6 +30,7 @@
         <button id="new-request">New Random Image</button>
       </div>
     </div>
+    <div id="popup-overlay"></div>
     <div id="popup">
       <div class="exit"><div class="left"></div><div class="right"></div></div>
       <div class="content">
@@ -50,28 +48,34 @@
 
 <style>
   body {
+    font-family: 'Roboto', sans-serif;
     position: relative;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
   }
   .header {
     display: flex;
-    align-items: center;
+    align-items: end;
     justify-content: space-between;
-    height: 124px;
+    height: 88px;
+    margin-bottom: 32px;
   }
   form {
-    width: 50%;
+    width: 80%;
   }
   form input[type='text'] {
     border: 0;
-    width: 80%;
-    border-bottom: 1px solid black;
+    width: 60%;
+    font-size: 32px;
+    border-bottom: 1px solid #222222;
   }
   #details {
-    height: 32px;
-    width: 32px;
+    height: 40px;
+    width: 40px;
     border-radius: 100px;
-    font-size: 20px;
-    border: 1px solid black;
+    font-size: 32px;
+    border: 1px solid #222222;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -85,7 +89,7 @@
   }
   .image-wrapper {
     position: relative;
-    height: calc( 100vh - 264px );
+    height: calc( 100vh - 260px );
     width: 100%;
     top: 0;
     left: 0;
@@ -95,45 +99,64 @@
     width: 100%;
     object-fit: cover;
   }
-  #new-request {
+  #new-request,
+  input[type="submit"] {
     margin-left: auto;
     width: fit-content;
-    padding: 8px 12px;
-    border: 1px solid black;
-    background-color: black;
-    color: white;
+    padding: 8px 10px 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid #222222;
+    background-color: transparent;
+    color: #222222;
     font-size: 32px;
-    border-radius: 12px;
   }
   .footer {
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: center;
     height: 124px;
-    margin-top: 16px;
-  }
-  .photo-data {
-    margin-top: -16px;
+    padding-top: 16px;
   }
   #popup {
     position: absolute;
     opacity: 0;
     transition: all .3s;
     width: 75%;
-    padding: 20px 24px;
+    padding: 26px 32px 32px;
+    border-radius: 8px;
     background-color: white;
     pointer-events: none;
-    top: 50%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+  #popup-overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.6);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: all .3s;
+    pointer-events: none;
+  }
+  #popup-overlay.active {
+    opacity: 1;
   }
   #popup .content h2 {
     text-align: center;
     margin-bottom: 24px;
-    font-size: 48px;
+    margin-top: 12px;
+    font-size: 72px;
   }
   #popup .content p {
-    font-size: 24px;
+    font-size: 28px;
+  }
+  #popup .content p:last-of-type {
+    margin-bottom: 0;
   }
   #popup.active {
     opacity: 1;
@@ -145,14 +168,22 @@
     align-items: center;
     justify-content: center;
 	  transform: rotate(45deg);
-    top: 1rem;
-    right: 1rem;
+    top: 1.5rem;
+    right: 1.5rem;
   }
+  #popup .exit::before {
+      content: "";
+      position: absolute;
+      height: 32px;
+      width: 32px;
+      top: -15px;
+      left: -12px;
+    }
   .left {
     content: "";
     position: absolute;
-    background-color: black;
-    width: 13px;
+    background-color: #222222;
+    width: 1.5rem;
     height: 1px;
     top: 50%;
     left: 50%;
@@ -161,9 +192,9 @@
   .right {
     content: "";
     position: absolute;
-    background-color: black;
+    background-color: #222222;
     width: 1px;
-    height: 13px;
+    height: 1.5rem;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -183,11 +214,6 @@ var random = {
   "timeout": 0,
 };
 
-var search = {
-  "url": "https://api.unsplash.com/search/photos/?query=lion&per_page=10&client_id=dryCYdEKq53ekmRGo1Syv33y2x7oMybQvn3oICgJL9A",
-  "method": "GET",
-  "timeout": 0,
-};
 
 unsplashRandom();
 
@@ -202,6 +228,13 @@ function unsplashRandom() {
 }
 
 function unsplashSearch() {
+  const variable = $('#search-term').val();
+  console.log(variable);
+  var search = {
+    "url": "https://api.unsplash.com/search/photos/?query=" + variable + "&per_page=10&client_id=dryCYdEKq53ekmRGo1Syv33y2x7oMybQvn3oICgJL9A",
+    "method": "GET",
+    "timeout": 0,
+  };
   $.ajax(search).done(function (response) {
     let x = Math.round(Math.random() * response.results.length);
     console.log(x);
@@ -211,15 +244,18 @@ function unsplashSearch() {
     $('#photographer-name').text(response.results[x].user.name);
   });
 }
-
+$('form').on('submit', function(e) {
+  e.preventDefault();
+  unsplashSearch();
+});
 $('#new-request').on('click', function() {
   unsplashRandom();
 });
 
 $('#details').on('click', function() {
-  $('#popup').addClass('active');
+  $('#popup, #popup-overlay').addClass('active');
 });
 $('#popup .exit').on('click', function() {
-  $('#popup').removeClass('active');
+  $('#popup, #popup-overlay').removeClass('active');
 });
 </script>
