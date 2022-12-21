@@ -75,7 +75,12 @@
     border: 0;
     width: 60%;
     font-size: 32px;
+    border-radius: 0;
+    outline: none;
     border-bottom: 1px solid #222222;
+  }
+  form input[type='text']:focus {
+    outline: none;
   }
   #details {
     height: 40px;
@@ -89,10 +94,11 @@
     justify-content: center;
   }
   .section-wrapper {
-    position: relative;
+    position: fixed;
     height: 100vh;
-    width: 85%;
+    width: 100%;
     margin: 0 auto;
+    padding: 0 4%;
   }
   .image-wrapper {
     position: relative;
